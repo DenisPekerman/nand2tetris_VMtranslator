@@ -1,0 +1,4 @@
+.DS_Store
+screenshots/
+.vscode/settings.json
+__pycache__/
