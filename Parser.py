@@ -1,5 +1,4 @@
-
-import sys 
+import re
 
 class Parser:
     input_file = None
@@ -26,14 +25,36 @@ class Parser:
                 continue
             return True
         
+
     def commandType(self):
-        return 'COMMAND'
-    
+        arg_pattern = r'^(label|goto|if|push|pop|function|call)\b'
+        arithmetic_pattern = r'^(add|sub|neg|eq|gt|lt|and|or|not)\b$'
+
+        arg_match = re.match(arg_pattern, self.line)
+        arith_match = re.match(arithmetic_pattern, self.line)
+       
+        if arith_match:
+            return 'C_ARITHMETIC'
+        elif arg_match:
+            return 'C_{}'.format(arg_match.group(1).upper())        
+            
+        
     def arg1(self):
-        return 'ARG1'
-    
+        command_type = self.commandType()
+        if command_type not in ('C_RETURN', 'C_ARITHMETIC'):
+            arg = self.line.split()
+            return arg[1]
+        elif command_type == 'C_ARITHMETIC':
+            return self.line[:]
+
+
     def arg2(self):
-        return 0
+        commamnd_type = self.commandType()
+        if commamnd_type in ('C_PUSH', 'C_POP', 'C_FUNCTION', 'C_CALL'):
+            arg = self.line.split()
+            return arg[2]
+
+       
 
 
   

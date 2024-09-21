@@ -1,5 +1,7 @@
 from Parser import Parser
+from CodeWriter import CodeWriter
 import sys
+
 
 
 class Main:
@@ -12,11 +14,13 @@ class Main:
     def translation(self):
         parser = Parser(self.input_file)
         while parser.advance():
-            comm_type = parser.commandType()
-            command = 'push'
+            command = parser.commandType()
             arg1 = parser.arg1()
             arg2 = parser.arg2()
-            self.asm_out.append('{} {} {}'.format(command, arg1, arg2))
+            if arg1 == 'C_ARITHMETIC':
+                self.asm_out.append(arg1)
+            elif arg1 != 'C_ARITHMETIC':
+                self.asm_out.append('{} {}'.format(arg1, arg2))
             
     def out_file(self):
         with open(output_file, 'w') as out_file:
