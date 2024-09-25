@@ -1,3 +1,4 @@
+from typing import TextIO
 
 # Register indices
 RAM_SP = 0      # Stack pointer
@@ -24,135 +25,221 @@ RAM_STACK = 256
 RAM_STACK_END = 2047
 
 class CodeWriter:
-    def __init__(self, input_file_name):
-        #   self.output_file = output_file
+    output_file: TextIO
+
+    def __init__(self, input_file_name: str, output_file: TextIO):
         self.hack_RAM = []
-        self.file_name = input_file_name
-            
-    def writerArithmetic(self, c_arithmetic):
+        self.input_file = input_file_name
+        self.output_file = output_file
+        self.line_number = 0
+
+    def writerArithmetic(self, command):
+        if command == 'add':
+            self._addSubOperator('+')
+
+        elif command == 'sub':
+            self._addSubOperator('-')
+
+        elif command == 'neg':
+            self._output("@SP")
+            self._output("M=M-1")
+            self._output("D=M")
+            self._output("D=-D")
+            self._storeAndIncrement()
+
+        elif command == 'eq':
+            self._comparisonOperator('JEQ')
+
+        elif command == 'gt':
+            self._comparisonOperator('JGT')
         
-        pass
+        elif command == 'lt':
+            self._comparisonOperator('JLT')
+
+        elif command == 'and':
+            self._andOrOperator('&')
+            self._storeAndIncrement()
+
+        elif command == 'or':
+            self._andOrOperator('|')
+            self._storeAndIncrement()
+
+        elif command == 'not':
+            self._output("@SP")
+            self._output("M=M-1")
+            self._output("A=M")
+            self._output("M=!M")
+            self._output("@SP")
+            self._output("M=M+1")
+
+        self.line_number += 1
+
 
 
 
     def writePushPop(self, command, segment, index):
-
-#push temp, local, argument, that, this:
-#@index              Load the address of the variable at 'index' into the A register
-#D=A                 Store the address in the D register
-#@segment            Load the address of the segment into the A register
-#A=D+(value_to_add)  Set the A register to the address of `D + (A(segment-adress) + index)' OR 'D + (M(segment-content) + index')
-#D=M                 Load the value at the calculated address into the D register
-#@SP                 Load the address of the stack pointer into the A register
-#A=M                 Dereference the stack pointer to access the top of the stack
-#M=D                 Store the value from D into the top of the stack
-#@SP                 Load the address of the stack pointer into the A register again
-#M=M+1               Increment the stack pointer to point to the next empty position
-
-#push: static
-# @{self.file_name}{index}  Access static variable indexed by {index}, where {self.file_name} is the VM file name
-# D=M                       Load the value of static[index] into register D
-# @SP                       Access the stack pointer (SP)
-# A=M                       Set A to the address where SP is pointing (top of the stack)
-# M=D                       Store the value from D (static[index]) at the top of the stack
-# @SP                       Access the stack pointer (SP) again
-# M=M+1                     Increment the stack pointer to point to the next available space on the stack
-
-#push pointer:
-# @THAT/THIS     When pointer's index is 1/0 access the THAT/THIS register
-# D=M            Load the value of THAT/THIS into register D
-# @SP            Access the stack pointer (SP)
-# A=M            Set A to the address where SP is pointing (top of the stack)
-# M=D            Store the value from D (THAT/THIS) at the top of the stack
-# @SP            Access the stack pointer (SP) again
-# M=M+1          Increment the stack pointer to point to the next available space on the stack
-
-#push constant:
-# @index                Load the address of the variable at 'index'
-# D=A                   Store the address in D
-# @SP                   Load the stack pointer address
-# A=M                   Set A to the value of the stack pointer (top of the stack)
-# M=D                   Store the value from D(index) into the top of the stack
-# @SP                   Load the stack pointer address again
-# M=M+1                 Increment the stack pointer to point to the next empty slot
-
-#pop:
-#@index              Load the address of the variable at 'index' into the A register
-#D=A                 Store the address in the D register
-#@segment            Load the address of the segment into the A register
-#A=D+(value_to_add)  Set the A register to the address of `D + (A(segment-adress) + index)' OR 'D + (M(segment-content) + index')
-#D=M                 Load the value at the calculated address into the D register
-#@SP                 Load the address of the stack pointer into the A register again
-#M=M-1               Decrement the stack pointer to point to the previous position
-#@SP                 Load the address of the stack pointer into the A register
-#A=M                 Dereference the stack pointer to access the top of the stack
-#M=D                 Store the value from D into the top of the stack
-
-
+        if not isinstance(index, int):
+            print('INDEX ERROR')
+            return 
+        
         if command == 'C_PUSH':
             if segment == 'static':
-                self.hack_RAM.append(f'@{self.file_name}.{index}')
-                self.hack_RAM.append('D=M')
-                self.hack_RAM.append('@SP')
-                self.hack_RAM.append('A=M')
-                self.hack_RAM.append('M=D')
-                self.hack_RAM.append('@SP')
-                self.hack_RAM.append('M=M+1')
-                        
+                self._output(f'@{self.input_file}.{index}')
+                self._output('D=M')
+                self._storeAndIncrement()
+                
             elif segment == 'temp':
                 self._pushPopHelper(index, RAM_TEMP, "A")
+                self._storeAndIncrement()
                 
             elif segment == 'local':
                 self._pushPopHelper(index, 'LCL', "M")
+                self._storeAndIncrement()
 
             elif segment == 'argument':
                 self._pushPopHelper(index, 'ARG', "M")
+                self._storeAndIncrement()
 
             elif segment == 'that':
                 self._pushPopHelper(index, 'THAT', 'M')
+                self._storeAndIncrement()
 
             elif segment == 'this':
                 self._pushPopHelper(index, 'THIS', 'M')
+                self._storeAndIncrement()
 
             elif segment == 'pointer':
                 if index == 1:
-                    self.hack_RAM.append("@THAT")
+                    self._output("@THAT")
                 else:
-                    self.hack_RAM.append("@THIS")
-                self.hack_RAM.append("D=M")
-                self.hack_RAM.append("@SP")
-                self.hack_RAM.append("A=M")
-                self.hack_RAM.append("M=D")
-                self.hack_RAM.append("@SP")
-                self.hack_RAM.append("M=M+1")
+                    self._output("@THIS")
+
+                self._output("D=M")
+                self._storeAndIncrement()
 
             elif segment == 'constant':
-                self.hack_RAM.append(f'@{index}')
-                self.hack_RAM.append('D=A')
-                self.hack_RAM.append('@SP')               
-                self.hack_RAM.append('A=M')
-                self.hack_RAM.append('M=D')
-                self.hack_RAM.append('@SP')
-                self.hack_RAM.append('M=M+1')
-
-        # if command == 'C_POP':
-
-        #     if segment == 'local':
+                self._output(f'@{index}')
+                self._output('D=A')
+                self._storeAndIncrement()
 
 
+        if command == 'C_POP':
+            if segment == 'static':
+                self._output('@SP')
+                self._output('M=M-1')
+                self._output('@SP')
+                self._output('A=M')
+                self._output('D=M')
+                self._output(f'@{self.input_file}.{index}')
+                self._output('M=D')
 
-    
+            if segment == 'temp':
+                self._pushPopHelper(index, RAM_TEMP, 'A')
+                self._decrementAndStore()
+
+            if segment == 'local':
+                self._pushPopHelper(index, 'LCL', 'M')
+                self._decrementAndStore()
+
+            if segment == 'argument':
+                self._pushPopHelper(index, 'ARG', 'M')
+                self._decrementAndStore()
+
+            if segment == 'that':
+                self._pushPopHelper(index, 'THAT', 'M')
+                self._decrementAndStore()
+
+            if segment == 'this':
+                self._pushPopHelper(index, 'THIS', 'M')
+                self._decrementAndStore()
+
+            if segment == 'pointer':
+                self._output(f'@SP')
+                self._output(f'M=M-1')
+
+                if index == 1: 
+                    self._output(f'@THAT')
+                if index == 0:
+                    self._output(f'@THIS')
+                
+                self._output(f'D=M')
+                self._output(f'@SP')
+                self._output(f'A=M')
+                self._output(f'M=D')
+
+            self.line_number += 1
+
+
     def _pushPopHelper(self, index, segment, value_to_add):
-        self.hack_RAM.append(f'@{index}')
-        self.hack_RAM.append('D=A')
-        self.hack_RAM.append(f'@{segment}')
-        self.hack_RAM.append(f'A=D+{value_to_add}')
-        self.hack_RAM.append('D=M')
-        self.hack_RAM.append('@SP')               
-        self.hack_RAM.append('A=M')
-        self.hack_RAM.append('M=D')
-        self.hack_RAM.append('@SP')
-        self.hack_RAM.append('M=M+1')
+        self._output(f'@{index}')
+        self._output('D=A')
+        self._output(f'@{segment}')
+        self._output(f'A=D+{value_to_add}')
+        self._output('D=M')
+    
+    def _storeAndIncrement(self):
+        self._output('@SP')               
+        self._output('A=M')
+        self._output('M=D')
+        self._output('@SP')
+        self._output('M=M+1')
+
+    def _decrementAndStore(self):
+        self._output('@SP')
+        self._output('M=M-1')
+        self._output('@SP')
+        self._output('A=M')
+        self._output('M=D')
+
+    def _comparisonOperator(self, type):
+        self._output("@SP")
+        self._output("M=M-1")
+        self._output("D=M")
+        self._output("@SP")
+        self._output("M=M-1")
+        self._output("A=M")
+        self._output("D=M-D")
+        self._output(f"@COMP_{self.line_number}")
+        self._output(f"D;{type}")
+        self._output("@SP")
+        self._output("A=M")
+        self._output("M=0")
+        self._output(f"@END_{self.line_number}")
+        self._output("0;JMP")
+        self._output(f"(COMP_{self.line_number})")
+        self._output("@SP")
+        self._output("A=M")
+        self._output("M=-1")
+        self._output(f"(END_{self.line_number})")
+        self._output("M=M+1")
+
+    def _addSubOperator(self, operator):
+        self._output("@SP")
+        self._output("M=M-1")
+        self._output("D=M")
+        self._output("@SP")
+        self._output("M=M-1")
+        self._output("A=M")
+        self._output(f"D=D{operator}A")
+        self._output("@SP")
+        self._output("A=M")
+        self._output("M=D")
+        self._output("@SP")
+        self._output("M=M+1")
+
+    def _andOrOperator(self, operator):
+        self._output("@SP")
+        self._output("M=M-1")
+        self._output("D=M")
+        self._output("@SP")
+        self._output("M=M-1")
+        self._output("A=M")
+        self._output(f"D=D{operator}A")
+
+    def _output(self, line):
+        self.output_file.write(line+'\n')
+
+
 
     
         
