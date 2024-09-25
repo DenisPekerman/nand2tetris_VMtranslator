@@ -78,8 +78,10 @@ class CodeWriter:
 
 
     def writePushPop(self, command, segment, index):
-        if not isinstance(index, int):
-            print('INDEX ERROR')
+        try:
+            int(index)
+        except:
+            print('INDEX ERROR', index)
             return 
         
         if command == 'C_PUSH':
