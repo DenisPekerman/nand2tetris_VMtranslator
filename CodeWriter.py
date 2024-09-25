@@ -34,6 +34,7 @@ class CodeWriter:
         self.line_number = 0
 
     def writerArithmetic(self, command):
+        self._output(f'// {command}')
         if command == 'add':
             self._addSubOperator('+')
 
@@ -83,7 +84,7 @@ class CodeWriter:
         except:
             print('INDEX ERROR', index)
             return 
-        
+        self._output(f'//{command} {segment} {index}')
         if command == 'C_PUSH':
             if segment == 'static':
                 self._output(f'@{self.input_file}.{index}')

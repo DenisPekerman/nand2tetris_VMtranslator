@@ -10,7 +10,7 @@ class MockFile:
         self.content.append(string.strip())
 
     def read(self):
-        return self.content
+        return self.content[1:]
 
 class TestCodeWriter(unittest.TestCase):
     codeWriter = None
