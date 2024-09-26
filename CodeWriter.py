@@ -141,7 +141,6 @@ class CodeWriter:
             if segment == 'static':
                 self._output('@SP')
                 self._output('M=M-1')
-                self._output('@SP')
                 self._output('A=M')
                 self._output('D=M')
                 self._output(f'@{self.input_file}.{index}')
@@ -149,23 +148,23 @@ class CodeWriter:
 
             if segment == 'temp':
                 self._pushPopHelper('5', 'A', index)
-                self._decrementAndStore()
+                self._popHelper()
 
             if segment == 'local':
                 self._pushPopHelper("LCL", 'M', index)
-                self._decrementAndStore()
+                self._popHelper()
 
             if segment == 'argument':
                 self._pushPopHelper("ARG", 'M', index)
-                self._decrementAndStore()
+                self._popHelper()
 
             if segment == 'that':
                 self._pushPopHelper('THAT', 'M', index)
-                self._decrementAndStore()
+                self._popHelper()
 
             if segment == 'this':
                 self._pushPopHelper('THIS', 'M', index)
-                self._decrementAndStore()
+                self._popHelper()
 
             if segment == 'pointer':
                 self._output(f'@SP')
@@ -188,9 +187,17 @@ class CodeWriter:
         self._output(f'@{index}')
         self._output('D=D+A')
 
-    # def _popHelper(self):
+    def _popHelper(self):
+        self._output(f'@addr_{self.line_number}')
+        self._output('M=D')
+        self._output('@SP')
+        self._output('M=M-1')
+        self._output('A=M')
+        self._output('D=M')
+        self._output(f'@addr_{self.line_number}')
+        self._output('A=M')
+        self._output('M=D')
 
-        
     def _storeAndIncrement(self):
         self._output('@SP')               
         self._output('A=M')

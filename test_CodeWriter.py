@@ -365,89 +365,108 @@ class TestCodeWriter(unittest.TestCase):
         expectedResult = [
             "@SP",
             "M=M-1",
-            "@SP",
             "A=M",
             "D=M",
             "@Foo.3",
-            "M=D"
+            "M=D",
         ]
         self.assertListEqual(self.mockFile.read(), expectedResult)
 
     def testPopTemp(self):
+        self.codeWriter.line_number = 17
         self.codeWriter.writePushPop("C_POP", "temp", 2)
         expectedResult = [
-            "@2",
-            "D=A",
             "@5",
-            "A=D+A",
-            "D=M",
+            "D=A",
+            "@2",
+            "D=D+A",
+            "@addr_17",
+            "M=D",
             "@SP",
             "M=M-1",
-            "@SP",
+            "A=M",
+            "D=M",
+            "@addr_17",
             "A=M",
             "M=D",
         ]
         self.assertListEqual(self.mockFile.read(), expectedResult)  
 
     def testPopLocal(self):
+        self.codeWriter.line_number = 17
         self.codeWriter.writePushPop("C_POP", "local", 2)
         expectedResult = [
-            "@2",
-            "D=A",
             "@LCL",
-            "A=D+M",
             "D=M",
+            "@2",
+            "D=D+A",
+            "@addr_17",
+            "M=D",
             "@SP",
             "M=M-1",
-            "@SP",
+            "A=M",
+            "D=M",
+            "@addr_17",
             "A=M",
             "M=D",
         ]
         self.assertListEqual(self.mockFile.read(), expectedResult)
 
     def testPopArgument(self):
+        self.codeWriter.line_number = 17
         self.codeWriter.writePushPop("C_POP", "argument", 2)
         expectedResult = [
-            "@2",
-            "D=A",
             "@ARG",
-            "A=D+M",
             "D=M",
+            "@2",
+            "D=D+A",
+            "@addr_17",
+            "M=D",
             "@SP",
             "M=M-1",
-            "@SP",
+            "A=M",
+            "D=M",
+            "@addr_17",
             "A=M",
             "M=D",
         ]
         self.assertListEqual(self.mockFile.read(), expectedResult)
 
     def testPopThat(self):
+        self.codeWriter.line_number = 17
         self.codeWriter.writePushPop("C_POP", "that", 2)
         expectedResult = [
-            "@2",
-            "D=A",
             "@THAT",
-            "A=D+M",
             "D=M",
+            "@2",
+            "D=D+A",
+            "@addr_17",
+            "M=D",
             "@SP",
             "M=M-1",
-            "@SP",
+            "A=M",
+            "D=M",
+            "@addr_17",
             "A=M",
             "M=D",
         ]
         self.assertListEqual(self.mockFile.read(), expectedResult)
 
     def testPopThis(self):
+        self.codeWriter.line_number = 17
         self.codeWriter.writePushPop("C_POP", "this", 2)
         expectedResult = [
-            "@2",
-            "D=A",
             "@THIS",
-            "A=D+M",
             "D=M",
+            "@2",
+            "D=D+A",
+            "@addr_17",
+            "M=D",
             "@SP",
             "M=M-1",
-            "@SP",
+            "A=M",
+            "D=M",
+            "@addr_17",
             "A=M",
             "M=D",
         ]
