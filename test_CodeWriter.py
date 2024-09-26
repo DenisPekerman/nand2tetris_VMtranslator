@@ -209,6 +209,15 @@ class TestCodeWriter(unittest.TestCase):
 
     """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""PUSH TESTS"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+    def testWrongPushPop(self):
+        self.codeWriter.writePushPop("C_PUSH", "bomba", 3)
+        expectedResult = []
+        self.assertListEqual(self.mockFile.read(), expectedResult)
+
+    def testWrongPushPop2(self):
+        self.codeWriter.writePushPop("C_PUSH", "static", 'walla')
+        expectedResult = []
+        self.assertListEqual(self.mockFile.read(), expectedResult)
 
     def testPushStatic(self):
         self.codeWriter.writePushPop("C_PUSH", "static", 3)
@@ -220,27 +229,17 @@ class TestCodeWriter(unittest.TestCase):
             "M=D",
             "@SP",
             "M=M+1"
-       
         ]
         self.assertListEqual(self.mockFile.read(), expectedResult)
     
-    def testWrongPushPop(self):
-        self.codeWriter.writePushPop("C_PUSH", "bomba", 3)
-        expectedResult = []
-        self.assertListEqual(self.mockFile.read(), expectedResult)
-
-    def testWrongPushPop2(self):
-        self.codeWriter.writePushPop("C_PUSH", "static", 'walla')
-        expectedResult = []
-        self.assertListEqual(self.mockFile.read(), expectedResult)
-
     def testPushTemp(self):
         self.codeWriter.writePushPop("C_PUSH", "temp", 2)
         expectedResult = [
-            "@2",
-            "D=A",
             "@5",
-            "A=D+A",
+            "D=A",
+            "@2",
+            "D=D+A",
+            "A=D",
             "D=M",
             "@SP",
             "A=M",
@@ -253,10 +252,11 @@ class TestCodeWriter(unittest.TestCase):
     def testPushLocal(self):
         self.codeWriter.writePushPop("C_PUSH", "local", 2)
         expectedResult = [
-            "@2",
-            "D=A",
             "@LCL",
-            "A=D+M",
+            "D=M",
+            "@2",
+            "D=D+A",
+            "A=D",
             "D=M",
             "@SP",
             "A=M",
@@ -269,10 +269,11 @@ class TestCodeWriter(unittest.TestCase):
     def testPushArg(self):
         self.codeWriter.writePushPop("C_PUSH", "argument", 2)
         expectedResult = [
-            "@2",
-            "D=A",
             "@ARG",
-            "A=D+M",
+            "D=M",
+            "@2",
+            "D=D+A",
+            "A=D",
             "D=M",
             "@SP",
             "A=M",
@@ -285,10 +286,11 @@ class TestCodeWriter(unittest.TestCase):
     def testPushThat(self):
         self.codeWriter.writePushPop("C_PUSH", "that", 2)
         expectedResult = [
-            "@2",
-            "D=A",
             "@THAT",
-            "A=D+M",
+            "D=M",
+            "@2",
+            "D=D+A",
+            "A=D",
             "D=M",
             "@SP",
             "A=M",
@@ -301,10 +303,11 @@ class TestCodeWriter(unittest.TestCase):
     def testPushThis(self):
         self.codeWriter.writePushPop("C_PUSH", "this", 2)
         expectedResult = [
-            "@2",
-            "D=A",
             "@THIS",
-            "A=D+M",
+            "D=M",
+            "@2",
+            "D=D+A",
+            "A=D",
             "D=M",
             "@SP",
             "A=M",

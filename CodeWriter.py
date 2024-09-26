@@ -85,6 +85,7 @@ class CodeWriter:
             print('INDEX ERROR', index)
             return 
         self._output(f'//{command} {segment} {index}')
+
         if command == 'C_PUSH':
             if segment == 'static':
                 self._output(f'@{self.input_file}.{index}')
@@ -92,23 +93,33 @@ class CodeWriter:
                 self._storeAndIncrement()
                 
             elif segment == 'temp':
-                self._pushPopHelper(index, RAM_TEMP, "A")
+                self._pushPopHelper('5', 'A', index)
+                self._output('A=D')
+                self._output('D=M')
                 self._storeAndIncrement()
                 
             elif segment == 'local':
-                self._pushPopHelper(index, 'LCL', "M")
+                self._pushPopHelper('LCL', 'M', index)
+                self._output('A=D')
+                self._output('D=M')
                 self._storeAndIncrement()
 
             elif segment == 'argument':
-                self._pushPopHelper(index, 'ARG', "M")
+                self._pushPopHelper("ARG", 'M', index)
+                self._output('A=D')
+                self._output('D=M')
                 self._storeAndIncrement()
 
             elif segment == 'that':
-                self._pushPopHelper(index, 'THAT', 'M')
+                self._pushPopHelper("THAT", 'M', index)
+                self._output('A=D')
+                self._output('D=M')
                 self._storeAndIncrement()
 
             elif segment == 'this':
-                self._pushPopHelper(index, 'THIS', 'M')
+                self._pushPopHelper("THIS", 'M', index)
+                self._output('A=D')
+                self._output('D=M')
                 self._storeAndIncrement()
 
             elif segment == 'pointer':
@@ -137,34 +148,32 @@ class CodeWriter:
                 self._output('M=D')
 
             if segment == 'temp':
-                self._pushPopHelper(index, RAM_TEMP, 'A')
+                self._pushPopHelper('5', 'A', index)
                 self._decrementAndStore()
 
             if segment == 'local':
-                self._pushPopHelper(index, 'LCL', 'M')
+                self._pushPopHelper("LCL", 'M', index)
                 self._decrementAndStore()
 
             if segment == 'argument':
-                self._pushPopHelper(index, 'ARG', 'M')
+                self._pushPopHelper("ARG", 'M', index)
                 self._decrementAndStore()
 
             if segment == 'that':
-                self._pushPopHelper(index, 'THAT', 'M')
+                self._pushPopHelper('THAT', 'M', index)
                 self._decrementAndStore()
 
             if segment == 'this':
-                self._pushPopHelper(index, 'THIS', 'M')
+                self._pushPopHelper('THIS', 'M', index)
                 self._decrementAndStore()
 
             if segment == 'pointer':
                 self._output(f'@SP')
                 self._output(f'M=M-1')
-
                 if index == 1: 
                     self._output(f'@THAT')
                 if index == 0:
                     self._output(f'@THIS')
-                
                 self._output(f'D=M')
                 self._output(f'@SP')
                 self._output(f'A=M')
@@ -173,13 +182,15 @@ class CodeWriter:
             self.line_number += 1
 
 
-    def _pushPopHelper(self, index, segment, value_to_add):
-        self._output(f'@{index}')
-        self._output('D=A')
+    def _pushPopHelper(self, segment, value_to_add, index):
         self._output(f'@{segment}')
-        self._output(f'A=D+{value_to_add}')
-        self._output('D=M')
-    
+        self._output(f'D={value_to_add}')
+        self._output(f'@{index}')
+        self._output('D=D+A')
+
+    # def _popHelper(self):
+
+        
     def _storeAndIncrement(self):
         self._output('@SP')               
         self._output('A=M')
