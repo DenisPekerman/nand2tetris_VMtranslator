@@ -43,11 +43,9 @@ class CodeWriter:
 
         elif command == 'neg':
             self._output("@SP")
-            self._output("M=M-1")
-            self._output("D=M")
-            self._output("D=-D")
-            self._storeAndIncrement()
-
+            self._output("A=M-1")
+            self._output("M=-M")
+            
         elif command == 'eq':
             self._comparisonOperator('JEQ')
 
@@ -59,20 +57,15 @@ class CodeWriter:
 
         elif command == 'and':
             self._andOrOperator('&')
-            self._storeAndIncrement()
 
         elif command == 'or':
             self._andOrOperator('|')
-            self._storeAndIncrement()
 
         elif command == 'not':
             self._output("@SP")
-            self._output("M=M-1")
-            self._output("A=M")
+            self._output("A=M-1")
             self._output("M=!M")
-            self._output("@SP")
-            self._output("M=M+1")
-
+    
         self.line_number += 1
 
 
@@ -215,47 +208,39 @@ class CodeWriter:
     def _comparisonOperator(self, type):
         self._output("@SP")
         self._output("M=M-1")
-        self._output("D=M")
-        self._output("@SP")
-        self._output("M=M-1")
         self._output("A=M")
+        self._output("D=M")
+        self._output("A=A-1")
         self._output("D=M-D")
         self._output(f"@COMP_{self.line_number}")
         self._output(f"D;{type}")
         self._output("@SP")
-        self._output("A=M")
+        self._output("A=M-1")
         self._output("M=0")
         self._output(f"@END_{self.line_number}")
         self._output("0;JMP")
         self._output(f"(COMP_{self.line_number})")
         self._output("@SP")
-        self._output("A=M")
+        self._output("A=M-1")
         self._output("M=-1")
         self._output(f"(END_{self.line_number})")
-        self._output("M=M+1")
 
     def _addSubOperator(self, operator):
         self._output("@SP")
         self._output("M=M-1")
+        self._output("A=M")
         self._output("D=M")
-        self._output("@SP")
-        self._output("M=M-1")
-        self._output("A=M")
-        self._output(f"D=D{operator}A")
-        self._output("@SP")
-        self._output("A=M")
+        self._output("A=A-1")
+        self._output(f"D=D{operator}M")
         self._output("M=D")
-        self._output("@SP")
-        self._output("M=M+1")
-
+        
     def _andOrOperator(self, operator):
         self._output("@SP")
         self._output("M=M-1")
-        self._output("D=M")
-        self._output("@SP")
-        self._output("M=M-1")
         self._output("A=M")
-        self._output(f"D=D{operator}A")
+        self._output("D=M")
+        self._output("A=A-1")
+        self._output(f"D=D{operator}M")
 
     def _output(self, line):
         self.output_file.write(line+'\n')

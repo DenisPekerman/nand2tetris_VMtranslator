@@ -22,27 +22,22 @@ class TestCodeWriter(unittest.TestCase):
     
     """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""ARITHMETIC TEST""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" 
 
+    def testWrongArith(self):
+        self.codeWriter.writerArithmetic("what")
+        expectedResult = []
+        self.assertListEqual(self.mockFile.read(), expectedResult)
+
     def testAdd(self):
         self.codeWriter.writerArithmetic("add")
         expectedResult = [
             "@SP",
             "M=M-1",
+            "A=M",
             "D=M",
-            "@SP",
-            "M=M-1",
-            "A=M",
-            "D=D+A",
-            "@SP",
-            "A=M",
+            "A=A-1",
+            "D=D+M",
             "M=D",
-            "@SP",
-            "M=M+1",
         ]
-        self.assertListEqual(self.mockFile.read(), expectedResult)
-
-    def testWrongArith(self):
-        self.codeWriter.writerArithmetic("what")
-        expectedResult = []
         self.assertListEqual(self.mockFile.read(), expectedResult)
 
     def testSub(self):
@@ -50,16 +45,11 @@ class TestCodeWriter(unittest.TestCase):
         expectedResult = [
             "@SP",
             "M=M-1",
+            "A=M",
             "D=M",
-            "@SP",
-            "M=M-1",
-            "A=M",
-            "D=D-A",
-            "@SP",
-            "A=M",
+            "A=A-1",
+            "D=D-M",
             "M=D",
-            "@SP",
-            "M=M+1",
         ]
         self.assertListEqual(self.mockFile.read(), expectedResult)
 
@@ -67,14 +57,8 @@ class TestCodeWriter(unittest.TestCase):
         self.codeWriter.writerArithmetic("neg")
         expectedResult = [
             "@SP",
-            "M=M-1",
-            "D=M",
-            "D=-D",
-            "@SP",
-            "A=M",
-            "M=D",
-            "@SP",
-            "M=M+1",
+            "A=M-1",
+            "M=-M",
         ]
         self.assertListEqual(self.mockFile.read(), expectedResult)
 
@@ -84,24 +68,22 @@ class TestCodeWriter(unittest.TestCase):
         expectedResult = [
             "@SP",
             "M=M-1",
-            "D=M",
-            "@SP",
-            "M=M-1",
             "A=M",
+            "D=M",
+            "A=A-1",
             "D=M-D",
             "@COMP_17",
             "D;JEQ",
             "@SP",
-            "A=M",
+            "A=M-1",
             "M=0",
             "@END_17",
             "0;JMP",
             "(COMP_17)",
             "@SP",
-            "A=M",
+            "A=M-1",
             "M=-1",
             "(END_17)",
-            "M=M+1",
         ]
         self.assertListEqual(self.mockFile.read(), expectedResult)
 
@@ -111,24 +93,22 @@ class TestCodeWriter(unittest.TestCase):
         expectedResult = [
             "@SP",
             "M=M-1",
-            "D=M",
-            "@SP",
-            "M=M-1",
             "A=M",
+            "D=M",
+            "A=A-1",
             "D=M-D",
             "@COMP_17",
             "D;JGT",
             "@SP",
-            "A=M",
+            "A=M-1",
             "M=0",
             "@END_17",
             "0;JMP",
             "(COMP_17)",
             "@SP",
-            "A=M",
+            "A=M-1",
             "M=-1",
             "(END_17)",
-            "M=M+1",
         ]
         self.assertListEqual(self.mockFile.read(), expectedResult)
 
@@ -138,24 +118,22 @@ class TestCodeWriter(unittest.TestCase):
         expectedResult = [
             "@SP",
             "M=M-1",
-            "D=M",
-            "@SP",
-            "M=M-1",
             "A=M",
+            "D=M",
+            "A=A-1",
             "D=M-D",
             "@COMP_17",
             "D;JLT",
             "@SP",
-            "A=M",
+            "A=M-1",
             "M=0",
             "@END_17",
             "0;JMP",
             "(COMP_17)",
             "@SP",
-            "A=M",
+            "A=M-1",
             "M=-1",
             "(END_17)",
-            "M=M+1",
         ]
         self.assertListEqual(self.mockFile.read(), expectedResult)
 
@@ -164,16 +142,10 @@ class TestCodeWriter(unittest.TestCase):
         expectedResult = [
             "@SP",
             "M=M-1",
+            "A=M",
             "D=M",
-            "@SP",
-            "M=M-1",
-            "A=M",
-            "D=D&A",
-            "@SP",
-            "A=M",
-            "M=D",
-            "@SP",
-            "M=M+1",
+            "A=A-1",
+            "D=D&M",
         ]
         self.assertListEqual(self.mockFile.read(), expectedResult)
 
@@ -182,16 +154,10 @@ class TestCodeWriter(unittest.TestCase):
         expectedResult = [
             "@SP",
             "M=M-1",
+            "A=M",
             "D=M",
-            "@SP",
-            "M=M-1",
-            "A=M",
-            "D=D|A",
-            "@SP",
-            "A=M",
-            "M=D",
-            "@SP",
-            "M=M+1",
+            "A=A-1",
+            "D=D|M",
         ]
         self.assertListEqual(self.mockFile.read(), expectedResult)
 
@@ -199,11 +165,9 @@ class TestCodeWriter(unittest.TestCase):
         self.codeWriter.writerArithmetic("not")
         expectedResult = [
             "@SP",
-            "M=M-1",
-            "A=M",
+            "A=M-1",
             "M=!M",
-            "@SP",
-            "M=M+1",
+            
         ]
         self.assertListEqual(self.mockFile.read(), expectedResult)
 
