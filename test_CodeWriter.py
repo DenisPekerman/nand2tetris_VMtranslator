@@ -145,7 +145,7 @@ class TestCodeWriter(unittest.TestCase):
             "A=M",
             "D=M",
             "A=A-1",
-            "D=D&M",
+            "M=D&M",
         ]
         self.assertListEqual(self.mockFile.read(), expectedResult)
 
@@ -157,7 +157,7 @@ class TestCodeWriter(unittest.TestCase):
             "A=M",
             "D=M",
             "A=A-1",
-            "D=D|M",
+            "M=D|M",
         ]
         self.assertListEqual(self.mockFile.read(), expectedResult)
 

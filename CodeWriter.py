@@ -240,7 +240,7 @@ class CodeWriter:
         self._output("A=M")
         self._output("D=M")
         self._output("A=A-1")
-        self._output(f"D=D{operator}M")
+        self._output(f"M=D{operator}M")
 
     def _output(self, line):
         self.output_file.write(line+'\n')
