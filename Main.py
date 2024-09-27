@@ -1,8 +1,7 @@
 from Parser import Parser
 from CodeWriter import CodeWriter
 import sys
-
-
+import os
 
 
 class Main:
@@ -12,14 +11,15 @@ class Main:
         self.output_file = output_file
                 
     def translation(self):
-        file_name = self.input_file.split('.')[0]
+        file_label = os.path.basename(self.input_file)
+        file_label = file_label.split('.')[0]
         parser = Parser(self.input_file)
 
         if not self.output_file:
             return 
         
         with open(self.output_file, 'w') as f:
-            code = CodeWriter(file_name, f)
+            code = CodeWriter(file_label, f)
         
             while parser.advance():
                 commanType= parser.commandType()
