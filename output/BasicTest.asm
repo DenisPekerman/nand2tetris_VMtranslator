@@ -202,7 +202,7 @@ M=M-1
 A=M
 D=M
 A=A-1
-D=D-M
+D=M-D
 M=D
 //C_PUSH this 6
 @THIS
@@ -242,7 +242,7 @@ M=M-1
 A=M
 D=M
 A=A-1
-D=D-M
+D=M-D
 M=D
 //C_PUSH temp 6
 @5

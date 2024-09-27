@@ -231,7 +231,10 @@ class CodeWriter:
         self._output("A=M")
         self._output("D=M")
         self._output("A=A-1")
-        self._output(f"D=D{operator}M")
+        if operator == '+':
+            self._output(f"D=D+M")
+        elif operator == '-':
+            self._output(f"D=M-D")
         self._output("M=D")
         
     def _andOrOperator(self, operator):

@@ -27,32 +27,32 @@ M=M+1
 M=M-1
 A=M
 D=M
-@input/StaticTest.8
+@StaticTest.8
 M=D
 //C_POP static 3
 @SP
 M=M-1
 A=M
 D=M
-@input/StaticTest.3
+@StaticTest.3
 M=D
 //C_POP static 1
 @SP
 M=M-1
 A=M
 D=M
-@input/StaticTest.1
+@StaticTest.1
 M=D
-//C_PUSH static 3
-@input/StaticTest.3
+//C_PUSH static 1
+@StaticTest.1
 D=M
 @SP
 A=M
 M=D
 @SP
 M=M+1
-//C_PUSH static 1
-@input/StaticTest.1
+//C_PUSH static 3
+@StaticTest.3
 D=M
 @SP
 A=M
@@ -66,20 +66,4 @@ A=M
 D=M
 A=A-1
 D=D-M
-M=D
-//C_PUSH static 8
-@input/StaticTest.8
-D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
-// add
-@SP
-M=M-1
-A=M
-D=M
-A=A-1
-D=D+M
 M=D

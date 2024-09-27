@@ -19,8 +19,11 @@ class TestCodeWriter(unittest.TestCase):
         self.mockFile = MockFile('Banana.asm')
         self.codeWriter = CodeWriter("Foo", self.mockFile)
         return super().setUp()
-    
+
+        
     """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""ARITHMETIC TEST""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" 
+
+
 
     def testWrongArith(self):
         self.codeWriter.writerArithmetic("what")
@@ -48,7 +51,7 @@ class TestCodeWriter(unittest.TestCase):
             "A=M",
             "D=M",
             "A=A-1",
-            "D=D-M",
+            "D=M-D",
             "M=D",
         ]
         self.assertListEqual(self.mockFile.read(), expectedResult)
