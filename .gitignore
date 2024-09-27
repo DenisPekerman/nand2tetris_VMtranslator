@@ -3,4 +3,3 @@ screenshots/
 .vscode/settings.json
 __pycache__/
 .venv/
-*.asm

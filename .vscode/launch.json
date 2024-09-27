@@ -11,7 +11,7 @@
             "program": "Main.py",
             "console": "integratedTerminal",
             "args": [
-                "BasicTest.vm", "BasicTest.asm"
+                "input/StaticTest.vm", "output/StaticTest.asm"
             ]
         }
     ]
