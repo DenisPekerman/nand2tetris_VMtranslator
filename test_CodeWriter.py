@@ -444,10 +444,9 @@ class TestCodeWriter(unittest.TestCase):
         expectedResult = [
             "@SP",
             "M=M-1",
-            "@THAT",
-            "D=M",
-            "@SP",
             "A=M",
+            "D=M",
+            "@THAT",
             "M=D",
         ]
         self.assertListEqual(self.mockFile.read(), expectedResult)
@@ -457,10 +456,9 @@ class TestCodeWriter(unittest.TestCase):
         expectedResult = [
             "@SP",
             "M=M-1",
-            "@THIS",
-            "D=M",
-            "@SP",
             "A=M",
+            "D=M",
+            "@THIS",
             "M=D",
         ]
         self.assertListEqual(self.mockFile.read(), expectedResult)

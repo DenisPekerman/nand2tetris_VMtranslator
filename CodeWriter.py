@@ -133,16 +133,15 @@ class CodeWriter:
                 self._popHelper()
 
             if segment == 'pointer':
-                self._output(f'@SP')
-                self._output(f'M=M-1')
+                self._output('@SP')
+                self._output('M=M-1')
+                self._output('A=M')
+                self._output('D=M')
                 if index == '1': 
                     self._output('@THAT')
                 if index == '0':
                     self._output('@THIS')
-                self._output(f'D=M')
-                self._output(f'@SP')
-                self._output(f'A=M')
-                self._output(f'M=D')
+                self._output('M=D')
 
             self.line_number += 1
 
@@ -170,13 +169,6 @@ class CodeWriter:
         self._output('M=D')
         self._output('@SP')
         self._output('M=M+1')
-
-    def _decrementAndStore(self):
-        self._output('@SP')
-        self._output('M=M-1')
-        self._output('@SP')
-        self._output('A=M')
-        self._output('M=D')
 
     def _comparisonOperator(self, type):
         self._output("@SP")
