@@ -25,7 +25,7 @@ class Parser:
                 continue
             return True
         
-
+    """filters arithmetic commands from all other commands"""
     def commandType(self):
         arg_pattern = r'^(label|goto|if|push|pop|function|call)\b'
         arithmetic_pattern = r'^(add|sub|neg|eq|gt|lt|and|or|not)\b$'
@@ -38,7 +38,7 @@ class Parser:
         elif arg_match:
             return 'C_{}'.format(arg_match.group(1).upper())        
             
-        
+    """if not arithmetic returns the segment part of a command. if arithmetic returns the command"""
     def arg1(self):
         command_type = self.commandType()
         if command_type not in ('C_RETURN', 'C_ARITHMETIC'):
@@ -47,7 +47,7 @@ class Parser:
         elif command_type == 'C_ARITHMETIC':
             return self.line[:]
 
-
+    """returns the index part of a command"""
     def arg2(self):
         commamnd_type = self.commandType()
         if commamnd_type in ('C_PUSH', 'C_POP', 'C_FUNCTION', 'C_CALL'):

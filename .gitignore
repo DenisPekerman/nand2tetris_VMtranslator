@@ -3,3 +3,4 @@ screenshots/
 .vscode/settings.json
 __pycache__/
 .venv/
+VMTranslator

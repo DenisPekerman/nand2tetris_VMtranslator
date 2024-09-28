@@ -35,7 +35,11 @@ class Main:
     
 if __name__ == "__main__":
     input_file = sys.argv[1]
-    output_file = sys.argv[2]
+    try:
+        output_path = sys.argv[2]
+    except:
+        output_path = ''
+    output_file = os.path.join(output_path, input_file.replace('.vm', '.asm'))
     x = Main(input_file, output_file)
     x.translation()
     

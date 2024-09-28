@@ -1,29 +1,5 @@
 from typing import TextIO
 
-# Register indices
-RAM_SP = 0      # Stack pointer
-RAM_LCL = 1     # Local segment base address
-RAM_ARG = 2     # Argument segment base address
-RAM_THIS = 3    # THIS segment base address
-RAM_THAT = 4    # THAT segment base address
-
-# Temp segment (addresses 5–12)
-RAM_TEMP = 5
-
-# General purpose registers (addresses 13–15)
-RAM_R13 = 13
-RAM_R14 = 14
-RAM_R15 = 15
-
-# Static variables start at address 16
-RAM_STATIC = 16
-
-# Stack start at address 256
-RAM_STACK = 256
-
-# End of the RAM (address 2047)
-RAM_STACK_END = 2047
-
 class CodeWriter:
     output_file: TextIO
 
@@ -67,8 +43,6 @@ class CodeWriter:
             self._output("M=!M")
     
         self.line_number += 1
-
-
 
 
     def writePushPop(self, command, segment, index):
