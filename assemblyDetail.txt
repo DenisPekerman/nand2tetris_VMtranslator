@@ -30,17 +30,17 @@ A=M                        Set A to the new top of the stack (SP)
 D=M                        Store the top value of the stack into D-register
 A=A-1                      Move A to the address of the second-to-top value (SP-1)
 D=M-D                      Subtract the top value from the second-to-top value (M - D)
-@@COMP_{self.line_number}  Jump to COMP_self.line number if the result (D) is zero
-D;{type}                   If D == 0, jump to COMP_self.line number (for equality)
-@SP                        If not equal, continue and set the result to 0
+@@COMP_{self.line_number}  Jump to COMP_self.line number if the result (D) is eq/gt/lt
+D;{type}                   If D==0/D<0/D>0, jump to COMP_self.line number
+@SP                        If not jump, continue and set the result to 0
 A=M-1                      Set A to the second-to-top value
-M=0                        Set the result of the comparison to false (0) if not equal
+M=0                        Set the result of the comparison to false (0) if not eq/gt/lt
 @END_{self.line_number}    Jump to END_self.line number to skip the true case
 0;JMP                      Unconditional jump to END_self.line number
-(@COMP_{self.line_number}) Label for equality case
+(@COMP_{self.line_number}) Label for eq/gt/lt case
 @SP                        Set A to the stack pointer (SP)
 A=M-1                      Point to the second-to-top value
-M=-1                       Set the result to true (-1) if the values are equal
+M=-1                       Set the result to true (-1) if the values are eq/gt/lt
 (END_{self.line_number})   End label for the comparison
 ----------------------------------------------------------------------------------------------------------------
 ### and/or
