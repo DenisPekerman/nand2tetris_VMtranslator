@@ -197,9 +197,9 @@ class CodeWriter:
         self._output("D=M")
         self._output("A=A-1")
         if operator == '+':
-            self._output(f"D=D+M")
+            self._output("D=D+M")
         elif operator == '-':
-            self._output(f"D=M-D")
+            self._output("D=M-D")
         self._output("M=D")
         
     def _andOrOperator(self, operator):
