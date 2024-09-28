@@ -90,11 +90,10 @@ class CodeWriter:
                 self._storeAndIncrement()
 
             elif segment == 'pointer':
-                if index == 1:
+                if index == '1':
                     self._output("@THAT")
-                else:
+                elif index == '0':
                     self._output("@THIS")
-
                 self._output("D=M")
                 self._storeAndIncrement()
 
@@ -136,10 +135,10 @@ class CodeWriter:
             if segment == 'pointer':
                 self._output(f'@SP')
                 self._output(f'M=M-1')
-                if index == 1: 
-                    self._output(f'@THAT')
-                if index == 0:
-                    self._output(f'@THIS')
+                if index == '1': 
+                    self._output('@THAT')
+                if index == '0':
+                    self._output('@THIS')
                 self._output(f'D=M')
                 self._output(f'@SP')
                 self._output(f'A=M')

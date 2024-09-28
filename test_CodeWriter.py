@@ -177,7 +177,7 @@ class TestCodeWriter(unittest.TestCase):
     """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""PUSH TESTS"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
     def testWrongPushPop(self):
-        self.codeWriter.writePushPop("C_PUSH", "bomba", 3)
+        self.codeWriter.writePushPop("C_PUSH", "bomba", '3')
         expectedResult = []
         self.assertListEqual(self.mockFile.read(), expectedResult)
 
@@ -187,7 +187,7 @@ class TestCodeWriter(unittest.TestCase):
         self.assertListEqual(self.mockFile.read(), expectedResult)
 
     def testPushStatic(self):
-        self.codeWriter.writePushPop("C_PUSH", "static", 3)
+        self.codeWriter.writePushPop("C_PUSH", "static", '3')
         expectedResult = [
             "@Foo.3",
             "D=M",
@@ -200,7 +200,7 @@ class TestCodeWriter(unittest.TestCase):
         self.assertListEqual(self.mockFile.read(), expectedResult)
     
     def testPushTemp(self):
-        self.codeWriter.writePushPop("C_PUSH", "temp", 2)
+        self.codeWriter.writePushPop("C_PUSH", "temp", '2')
         expectedResult = [
             "@5",
             "D=A",
@@ -217,7 +217,7 @@ class TestCodeWriter(unittest.TestCase):
         self.assertListEqual(self.mockFile.read(), expectedResult)
 
     def testPushLocal(self):
-        self.codeWriter.writePushPop("C_PUSH", "local", 2)
+        self.codeWriter.writePushPop("C_PUSH", "local", '2')
         expectedResult = [
             "@LCL",
             "D=M",
@@ -234,7 +234,7 @@ class TestCodeWriter(unittest.TestCase):
         self.assertListEqual(self.mockFile.read(), expectedResult)
 
     def testPushArg(self):
-        self.codeWriter.writePushPop("C_PUSH", "argument", 2)
+        self.codeWriter.writePushPop("C_PUSH", "argument", '2')
         expectedResult = [
             "@ARG",
             "D=M",
@@ -251,7 +251,7 @@ class TestCodeWriter(unittest.TestCase):
         self.assertListEqual(self.mockFile.read(), expectedResult)
 
     def testPushThat(self):
-        self.codeWriter.writePushPop("C_PUSH", "that", 2)
+        self.codeWriter.writePushPop("C_PUSH", "that", '2')
         expectedResult = [
             "@THAT",
             "D=M",
@@ -268,7 +268,7 @@ class TestCodeWriter(unittest.TestCase):
         self.assertListEqual(self.mockFile.read(), expectedResult)
 
     def testPushThis(self):
-        self.codeWriter.writePushPop("C_PUSH", "this", 2)
+        self.codeWriter.writePushPop("C_PUSH", "this", '2')
         expectedResult = [
             "@THIS",
             "D=M",
@@ -285,7 +285,7 @@ class TestCodeWriter(unittest.TestCase):
         self.assertListEqual(self.mockFile.read(), expectedResult)
 
     def testPushPointer_1(self):
-        self.codeWriter.writePushPop("C_PUSH", "pointer", 1)
+        self.codeWriter.writePushPop("C_PUSH", "pointer", '1')
         expectedResult = [
             "@THAT",
             "D=M",
@@ -298,7 +298,7 @@ class TestCodeWriter(unittest.TestCase):
         self.assertListEqual(self.mockFile.read(), expectedResult)
 
     def testPushPointer_0(self):
-        self.codeWriter.writePushPop("C_PUSH", "pointer", 0)
+        self.codeWriter.writePushPop("C_PUSH", "pointer", '0')
         expectedResult = [
             "@THIS",
             "D=M",
@@ -311,7 +311,7 @@ class TestCodeWriter(unittest.TestCase):
         self.assertListEqual(self.mockFile.read(), expectedResult)
 
     def testPushConst(self):
-        self.codeWriter.writePushPop("C_PUSH", "constant", 2)
+        self.codeWriter.writePushPop("C_PUSH", "constant", '2')
         expectedResult = [
             "@2",
             "D=A",
@@ -328,7 +328,7 @@ class TestCodeWriter(unittest.TestCase):
 """""
 
     def testPopStatic(self):
-        self.codeWriter.writePushPop("C_POP", "static", 3)
+        self.codeWriter.writePushPop("C_POP", "static", '3')
         expectedResult = [
             "@SP",
             "M=M-1",
@@ -341,7 +341,7 @@ class TestCodeWriter(unittest.TestCase):
 
     def testPopTemp(self):
         self.codeWriter.line_number = 17
-        self.codeWriter.writePushPop("C_POP", "temp", 2)
+        self.codeWriter.writePushPop("C_POP", "temp", '2')
         expectedResult = [
             "@5",
             "D=A",
@@ -361,7 +361,7 @@ class TestCodeWriter(unittest.TestCase):
 
     def testPopLocal(self):
         self.codeWriter.line_number = 17
-        self.codeWriter.writePushPop("C_POP", "local", 2)
+        self.codeWriter.writePushPop("C_POP", "local", '2')
         expectedResult = [
             "@LCL",
             "D=M",
@@ -381,7 +381,7 @@ class TestCodeWriter(unittest.TestCase):
 
     def testPopArgument(self):
         self.codeWriter.line_number = 17
-        self.codeWriter.writePushPop("C_POP", "argument", 2)
+        self.codeWriter.writePushPop("C_POP", "argument", '2')
         expectedResult = [
             "@ARG",
             "D=M",
@@ -401,7 +401,7 @@ class TestCodeWriter(unittest.TestCase):
 
     def testPopThat(self):
         self.codeWriter.line_number = 17
-        self.codeWriter.writePushPop("C_POP", "that", 2)
+        self.codeWriter.writePushPop("C_POP", "that", '2')
         expectedResult = [
             "@THAT",
             "D=M",
@@ -421,7 +421,7 @@ class TestCodeWriter(unittest.TestCase):
 
     def testPopThis(self):
         self.codeWriter.line_number = 17
-        self.codeWriter.writePushPop("C_POP", "this", 2)
+        self.codeWriter.writePushPop("C_POP", "this", '2')
         expectedResult = [
             "@THIS",
             "D=M",
@@ -440,7 +440,7 @@ class TestCodeWriter(unittest.TestCase):
         self.assertListEqual(self.mockFile.read(), expectedResult)
 
     def testPopPointer_1(self):
-        self.codeWriter.writePushPop("C_POP", "pointer", 1)
+        self.codeWriter.writePushPop("C_POP", "pointer", '1')
         expectedResult = [
             "@SP",
             "M=M-1",
@@ -453,7 +453,7 @@ class TestCodeWriter(unittest.TestCase):
         self.assertListEqual(self.mockFile.read(), expectedResult)
 
     def testPopPointer_0(self):
-        self.codeWriter.writePushPop("C_POP", "pointer", 0)
+        self.codeWriter.writePushPop("C_POP", "pointer", '0')
         expectedResult = [
             "@SP",
             "M=M-1",

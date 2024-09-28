@@ -39,8 +39,10 @@ if __name__ == "__main__":
         output_path = sys.argv[2]
     except:
         output_path = ''
-    output_file = os.path.join(output_path, input_file.replace('.vm', '.asm'))
+
+    input_file_name = os.path.basename(input_file)
+    output_file_name = input_file_name.replace('.vm', '.asm')
+    output_file = os.path.join(output_path, output_file_name)
+
     x = Main(input_file, output_file)
     x.translation()
-    
-    
