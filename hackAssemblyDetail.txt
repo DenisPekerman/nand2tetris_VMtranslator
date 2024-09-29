@@ -1,0 +1,196 @@
+------------------------------------------------------ARITHMETICS-------------------------------------------------------
+### add
+@SP                  Point to the stack pointer 
+M=M-1                Decrement SP 
+A=M                  Set A to the new top of the stack 
+D=M                  Store the top value of the stack into D-register
+A=A-1                Move A to the address of the second-to-top value 
+D=D+M                Add the value from D to the value at the second-to-top 
+M=D                  Store the result back in the second-to-top of the stack
+----------------------------------------------------------------------------------------------------------------
+### sub
+@SP         Point to the stack pointer 
+M=M-1       Decrement SP to move to the current top of the stack
+A=M         Set A to the new top of the stack 
+D=M         Store the value from the top of the stack into the D-register
+A=A-1       Move A to the address of the second-to-top value 
+D=M-D       Subtract the top value from the second-to-top value 
+M=D         Store the result of the subtraction in the second-to-top position
+----------------------------------------------------------------------------------------------------------------
+### negation
+@SP         Point to the stack pointer 
+A=M-1       Set A to the address of the top of the stack 
+M=-M        Negate the value at the top of the stack 
+----------------------------------------------------------------------------------------------------------------
+### eq/gt/lt
+### type = JEQ/JGT/JLT
+@SP                        Point to the stack pointer 
+M=M-1                      Decrement SP 
+A=M                        Set A to the new top of the stack 
+D=M                        Store the top value of the stack into D-register
+A=A-1                      Move A to the address of the second-to-top value
+D=M-D                      Subtract the top value from the second-to-top value
+@COMP_{self.line_number}   Jump to COMP_self.line_number if the result (D) is eq/gt/lt
+D;{type}                   If D==0/D<0/D>0, jump to COMP_self.line_number
+@SP                        If not jump, continue and set the result to 0
+A=M-1                      Set A to the second-to-top value
+M=0                        Set the result of the comparison to false (0) if not eq/gt/lt
+@END_{self.line_number}    Jump to END_self.line_number to skip the true case
+0;JMP                      Unconditional jump to END_self.line_number
+(@COMP_{self.line_number}) Label for eq/gt/lt case
+@SP                        Set A to the stack pointer 
+A=M-1                      Point to the second-to-top value
+M=-1                       Set the result to true (-1) if the values are eq/gt/lt
+(END_{self.line_number})   End label for the comparison
+----------------------------------------------------------------------------------------------------------------
+### and/or
+### operator = &/|
+@SP                  Point to the stack pointer 
+M=M-1                Decrement SP 
+A=M                  Set A to the new top of the stack 
+D=M                  Store the top value of the stack into D-register
+A=A-1                Move A to the address of the second-to-top value 
+M=D{operator}M       Perform a bitwise AND/OR between the top two values and store the result in the second-to-top position
+----------------------------------------------------------------------------------------------------------------
+### not
+@SP         Point to the stack pointer 
+A=M-1       Set A to the address of the top of the stack 
+M=!M        Perform a bitwise NOT operation on the value at the top of the stack 
+----------------------------------------------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------PUSH----------------------------------------------------------------
+
+
+
+----------------------------------------------------------------------------------------------------------------
+### push static i
+@{fileName}.{i}    Load the value from the memory location labeled fileName.i into the D-register
+D=M                Store the value at {fileName}.{i} into the D-register
+@SP                Point to the stack pointer 
+A=M                Set A to the current top of the stack 
+M=D                Store the value from D-register into the top of the stack
+@SP                Point to the stack pointer again
+M=M+1              Increment the stack pointer to reflect the pushed value
+----------------------------------------------------------------------------------------------------------------
+### push temp i
+@5          Load the constant 5 into the A-register
+D=A         Store the value 5 into the D-register
+@i          Load the constant i into the A-register
+D=D+A       Add i to the value in the D-register (D = 5 + i)
+A=D         Set A to the result of the addition (A=5+i)
+D=M         Load the value from the memory location at address 5+i into the D-register
+@SP         Point to the stack pointer 
+A=M         Set A to the current top of the stack 
+M=D         Store the value from D-register into the top of the stack
+@SP         Point to the stack pointer again
+M=M+1       Increment the stack pointer to reflect the pushed value
+----------------------------------------------------------------------------------------------------------------
+### push segment i
+### segment = local/argument/this/that
+@segment        Load the value of the segment base into the D-register
+D=M             Store the value of the base address into the D-register
+@i              Load the constant i into the A-register
+D=D+A           Add i to the base address stored in D 
+A=D             Set A to the resulting address 
+D=M             Load the value from the memory location at the calculated address into the D-register
+@SP             Point to the stack pointer 
+A=M             Set A to the current top of the stack 
+M=D             Store the value from the D-register into the top of the stack
+@SP             Point to the stack pointer again
+M=M+1           Increment the stack pointer to reflect the pushed value
+----------------------------------------------------------------------------------------------------------------
+### push pointer 1
+@THAT       Load the value of the `THAT` segment base into the D-register
+D=M         Store the value from `THAT` (the base address) into the D-register
+@SP         Point to the stack pointer 
+A=M         Set A to the current top of the stack 
+M=D         Store the value from the D-register into the top of the stack
+@SP         Point to the stack pointer again
+M=M+1       Increment the stack pointer to reflect the pushed value
+----------------------------------------------------------------------------------------------------------------
+### push pointer 0
+@THIS       Load the value of the `THIS` segment base into the D-register
+D=M         Store the value from `THIS` (the base address) into the D-register
+@SP         Point to the stack pointer 
+A=M         Set A to the current top of the stack 
+M=D         Store the value from the D-register into the top of the stack
+@SP         Point to the stack pointer again
+M=M+1       Increment the stack pointer to reflect the pushed value
+----------------------------------------------------------------------------------------------------------------
+### push constant i
+@i          Load the constant i into the A-register
+D=A         Store the value i into the D-register
+@SP         Point to the stack pointer 
+A=M         Set A to the current top of the stack 
+M=D         Store the value from the D-register into the top of the stack
+@SP         Point to the stack pointer again
+M=M+1       Increment the stack pointer to reflect the pushed value
+----------------------------------------------------------------------------------------------------------------
+
+
+
+----------------------------------------------------------------POP------------------------------------------------------------
+
+
+
+----------------------------------------------------------------------------------------------------------------
+### pop static i
+@SP                 Point to the stack pointer (SP)
+M=M-1               Decrement SP (SP--) to move to the current top of the stack
+A=M                 Set A to the new top of the stack (SP)
+D=M                 Store the value from the top of the stack into the D-register
+@{fileName}.{i}     Point to the memory location labeled {fileName}.{i}
+M=D                 Store the value from the D-register into the memory location {fileName}.{i}
+----------------------------------------------------------------------------------------------------------------
+### pop temp i
+@5                        Load the constant 5 into the A-register
+D=A                       Store the value 5 into the D-register
+@i                        Load the constant i into the A-register
+D=D+A                     Add i to the value in the D-register (D = 5 + i)
+@addr_{self.line_number}  Store the result in the memory location labeled `addr_{self.line_number}`
+M=D                       Save the value 5+i into `addr_{self.line_number}`
+@SP                       Point to the stack pointer (SP)
+M=M-1                     Decrement the stack pointer (SP--)
+A=M                       Set A to the new top of the stack (SP)
+D=M                       Store the top value of the stack into the D-register
+@addr_{self.line_number}  Point to the memory location labeled `addr_{self.line_number}`
+A=M                       Set A to the value stored in `addr_{self.line_number}`
+M=D                       Store the value from the D-register into the memory location pointed by `addr_{self.line_number}`
+----------------------------------------------------------------------------------------------------------------
+### pop segment i
+### segment = local/argument/this/that
+@segment                  Load the base address of the specified segment into the D-register
+D=M                       Store the value of the base address into the D-register
+@i                        Load the constant i into the A-register
+D=D+A                     Add i to the base address stored in D (D = segment + i)
+@addr_{self.line_number}  Store the result (segment + i) in the memory location labeled `addr_{self.line_number}`
+M=D                       Save the address (segment + i) into `addr_{self.line_number}`
+@SP                       Point to the stack pointer (SP)
+M=M-1                     Decrement the stack pointer (SP--)
+A=M                       Set A to the new top of the stack (SP)
+D=M                       Store the top value of the stack into the D-register
+@addr_{self.line_number}  Point to the memory location labeled `addr_{self.line_number}`
+A=M                       Set A to the value stored in `addr_{self.line_number}` (segment + i)
+M=D                       Store the value from the D-register into the memory location pointed by `addr_{self.line_number}`
+----------------------------------------------------------------------------------------------------------------
+### pop pointer 1
+@SP         Decrement the stack pointer (SP--)
+M=M-1
+A=M         Set A to the new top of the stack (SP)
+D=M         Store the value from the top of the stack into the D-register
+@THAT       Point to the `THAT` segment base address
+M=D         Store the value from the D-register into the `THAT` segment
+----------------------------------------------------------------------------------------------------------------
+### pop pointer 0
+@SP         Decrement the stack pointer (SP--)
+M=M-1
+A=M         Set A to the new top of the stack (SP)
+D=M         Store the value from the top of the stack into the D-register
+@THIS       Point to the `THIS` segment base address
+M=D         Store the value from the D-register into the `THIS` segment
+----------------------------------------------------------------------------------------------------------------
+
+
+

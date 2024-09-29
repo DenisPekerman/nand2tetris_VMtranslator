@@ -3,19 +3,18 @@ from typing import TextIO
 
 """This module consists of two main functions.
 
-writeArithmetic translates arithmetic operations: 
+writeArithmetic translates arithmetic commands: 
 add, sub, neg, eq, gt, lt, and, or not.
 
 writePushPop translates push and pop commands: 
 push/pop local,argument,this,that,temp,static,pointer,constant.
 
-details regarding assembly commands can be found at assemblyDetail.txt"""
+details regarding assembly commands can be found at hackAssemblyDetail.txt"""
 
 class CodeWriter:
     output_file: TextIO
 
     def __init__(self, input_file_name: str, output_file: TextIO):
-        self.hack_RAM = []
         self.input_file = input_file_name
         self.output_file = output_file
         self.line_number = 0
