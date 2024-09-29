@@ -1,5 +1,16 @@
 from typing import TextIO
 
+
+"""This module consists of two main functions.
+
+writeArithmetic translates arithmetic operations: 
+add, sub, neg, eq, gt, lt, and, or not.
+
+writePushPop translates push and pop commands: 
+push/pop local,argument,this,that,temp,static,pointer,constant.
+
+details regarding assembly commands can be found at assemblyDetail.txt"""
+
 class CodeWriter:
     output_file: TextIO
 
