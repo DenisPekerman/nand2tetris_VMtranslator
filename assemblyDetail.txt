@@ -101,7 +101,7 @@ M=D             Store the value from the D-register into the top of the stack
 @SP             Point to the stack pointer again
 M=M+1           Increment the stack pointer to reflect the pushed value
 ----------------------------------------------------------------------------------------------------------------
-### push atatic 1
+### push pointer 1
 @THAT       Load the value of the `THAT` segment base into the D-register
 D=M         Store the value from `THAT` (the base address) into the D-register
 @SP         Point to the stack pointer 
@@ -110,7 +110,7 @@ M=D         Store the value from the D-register into the top of the stack
 @SP         Point to the stack pointer again
 M=M+1       Increment the stack pointer to reflect the pushed value
 ----------------------------------------------------------------------------------------------------------------
-### push static 0
+### push pointer 0
 @THIS       Load the value of the `THIS` segment base into the D-register
 D=M         Store the value from `THIS` (the base address) into the D-register
 @SP         Point to the stack pointer 
