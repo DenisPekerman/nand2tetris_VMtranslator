@@ -33,7 +33,7 @@ class TestCodeWriter(unittest.TestCase):
     def testAdd(self):
         self.codeWriter.writerArithmetic("add")
         expectedResult = [
-            "@SP",
+            "@SP",          
             "M=M-1",
             "A=M",
             "D=M",
