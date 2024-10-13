@@ -23,14 +23,33 @@ class Main:
         
             while parser.advance():
                 commanType= parser.commandType()
-                segment = parser.arg1()
-                index = parser.arg2()
+                arg1 = parser.arg1()
+                arg2 = parser.arg2()
                 if commanType == 'C_ARITHMETIC':
-                    commanType = segment
+                    commanType = arg1
                     code.writerArithmetic(commanType) 
 
-                if commanType in ("C_PUSH", "C_POP"):
-                    code.writePushPop(commanType, segment, index)
+                elif commanType in ("C_PUSH", "C_POP"):
+                    code.writePushPop(commanType, arg1, arg2)
+
+                elif commanType == 'C_LABEL':
+                    code.writeLabel(arg1)
+                
+                elif commanType == 'C_GOTO':
+                    code.writeGoto(arg1)
+
+                elif commanType == 'C_IF':
+                    code.writeIf(arg1)
+
+                elif commanType == 'C_FUNCTION':
+                    code.writeFunction(arg1, arg2)
+
+                elif commanType == 'C_CALL':
+                    code.writeCall(arg1, arg2)
+                
+                elif commanType == 'C_RETURN':
+                    code.writeReturn()
+
 
     
 if __name__ == "__main__":

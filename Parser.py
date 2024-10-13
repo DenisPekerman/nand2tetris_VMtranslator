@@ -27,7 +27,7 @@ class Parser:
         
     """Command clasification"""
     def commandType(self):
-        arg_pattern = r'^(label|goto|if|push|pop|function|call)\b'
+        arg_pattern = r'^(label|goto|if|push|pop|function|call|return)\b'
         arithmetic_pattern = r'^(add|sub|neg|eq|gt|lt|and|or|not)\b$'
 
         arg_match = re.match(arg_pattern, self.line)

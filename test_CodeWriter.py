@@ -1,16 +1,6 @@
 import unittest
+from MockFile import MockFile
 from CodeWriter import CodeWriter 
-
-class MockFile:
-    def __init__(self, filename):
-        self.filename = filename
-        self.content = []
-
-    def write(self, string):
-        self.content.append(string.strip())
-
-    def read(self):
-        return self.content[1:]
 
 class TestCodeWriter(unittest.TestCase):
     codeWriter = None
@@ -20,9 +10,8 @@ class TestCodeWriter(unittest.TestCase):
         self.codeWriter = CodeWriter("Foo", self.mockFile)
         return super().setUp()
 
-    """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""ARITHMETIC TEST""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" 
+   # """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""ARITHMETIC TEST""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" 
  
-
 
     def testWrongArith(self):
         self.codeWriter.writerArithmetic("what")
@@ -174,7 +163,7 @@ class TestCodeWriter(unittest.TestCase):
         self.assertListEqual(self.mockFile.read(), expectedResult)
         
 
-    """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""PUSH TESTS"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+   # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""PUSH TESTS"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
     def testWrongPushPop(self):
         self.codeWriter.writePushPop("C_PUSH", "bomba", '3')
@@ -321,10 +310,11 @@ class TestCodeWriter(unittest.TestCase):
             "@SP",
             "M=M+1"
         ]
-        self.assertListEqual(self.mockFile.read(), expectedResult)  
+        self.assertListEqual(self.mockFile.read(), expectedResult) 
 
-    """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""POP TESTS""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"""""
+
+   #""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""POP TESTS""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 
     def testPopStatic(self):
         self.codeWriter.writePushPop("C_POP", "static", '3')
@@ -461,13 +451,6 @@ class TestCodeWriter(unittest.TestCase):
             "M=D",
         ]
         self.assertListEqual(self.mockFile.read(), expectedResult)
-
-    
-    
-    
-
-
-    
 
 
 if __name__ == '__main__':
