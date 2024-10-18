@@ -1,6 +1,6 @@
 from typing import TextIO
 
-"""This module consists of eight main functions.
+"""This module consists of eight main methods.
 
 writeArithmetic 
 writePushPop
@@ -16,11 +16,21 @@ details regarding assembly commands can be found at hackAssemblyDetail.txt"""
 class CodeWriter:
     output_file: TextIO
 
-    def __init__(self, input_file_name: str, output_file: TextIO):
+    def __init__(self, input_file_name: str, output_file: TextIO, sys_init=True):
         self.input_file = input_file_name
         self.output_file = output_file
-        self.line_number = 0
+        self.uniq_num = 0
+        if sys_init:
+            self.writeInit()
 
+
+    def writeInit(self):
+        self._output("@256")
+        self._output("D=A")
+        self._output("@SP")
+        self._output("M=D")
+        self.uniq_num += 1
+    
     def writerArithmetic(self, command):
         self._output(f'// {command}')
         if command == 'add':
@@ -54,7 +64,7 @@ class CodeWriter:
             self._output("A=M-1")
             self._output("M=!M")
     
-        self.line_number += 1
+        self.uniq_num += 1
 
 
     def writePushPop(self, command, segment, index):
@@ -156,49 +166,49 @@ class CodeWriter:
                     self._output('@THIS')
                 self._output('M=D')
 
-            self.line_number += 1
+            self.uniq_num += 1
 
 
     def writeLabel(self, label):
         self._output(f'// label {label}')
         self._output(f'({label})')
-        self.line_number += 1
+        self.uniq_num += 1
 
 
     def writeGoto(self, label):
         self._output(f'// goto {label}')
         self._output(f'@{label}')
         self._output('0;JMP')
-        self.line_number += 1
+        self.uniq_num += 1
     
     
     def writeIf(self, label):
-        self._output(f'// if-goto{label}')
+        self._output(f'// if-goto {label}')
         self._output('@SP')
         self._output('M=M-1')
         self._output('A=M')
         self._output('D=M')
         self._output(f'@{label}')
         self._output('D;JNE')
-        self.line_number += 1
+        self.uniq_num += 1
 
 
     def writeFunction(self, funcName, nArg):
         self._output(f'// function {funcName} {nArg}')
         self._output(f'({funcName})')
-        for push_0 in range(int(nArg)):
+        for _ in range(int(nArg)):
             self._output('@SP')
             self._output('A=M')
             self._output('M=0')
             self._output('@SP')
             self._output('M=M+1')
-        self.line_number += 1
+        self.uniq_num += 1
     
 
     def writeCall(self, funcName, nArg):
         self._output(f'// call {funcName} {nArg}')
 
-        self._callHelper(f'{funcName}$ret.{self.line_number}', 'A')
+        self._callHelper(f'{funcName}$ret.{self.uniq_num}', 'A')
         self._callHelper('LCL', 'M')
         self._callHelper('ARG', 'M')
         self._callHelper('THIS', 'M')
@@ -221,8 +231,8 @@ class CodeWriter:
         self._output(f'@{funcName}')
         self._output('0;JMP')
 
-        self._output(f'({funcName}$ret.{self.line_number})')
-        self.line_number += 1
+        self._output(f'({funcName}$ret.{self.uniq_num})')
+        self.uniq_num += 1
         
     def writeReturn(self):
         self._output('// Return')
@@ -265,7 +275,7 @@ class CodeWriter:
         self._output('@return_address')
         self._output('A=M')
         self._output('0;JMP')
-        self.line_number += 1
+        self.uniq_num += 1
         
 
         
@@ -278,13 +288,13 @@ class CodeWriter:
         self._output('D=D+A')
 
     def _popHelper(self):
-        self._output(f'@addr_{self.line_number}')
+        self._output(f'@addr_{self.uniq_num}')
         self._output('M=D')
         self._output('@SP')
         self._output('M=M-1')
         self._output('A=M')
         self._output('D=M')
-        self._output(f'@addr_{self.line_number}')
+        self._output(f'@addr_{self.uniq_num}')
         self._output('A=M')
         self._output('M=D')
 
@@ -302,18 +312,18 @@ class CodeWriter:
         self._output("D=M")
         self._output("A=A-1")
         self._output("D=M-D")
-        self._output(f"@COMP_{self.line_number}")
+        self._output(f"@COMP_{self.uniq_num}")
         self._output(f"D;{type}")
         self._output("@SP")
         self._output("A=M-1")
         self._output("M=0")
-        self._output(f"@END_{self.line_number}")
+        self._output(f"@END_{self.uniq_num}")
         self._output("0;JMP")
-        self._output(f"(COMP_{self.line_number})")
+        self._output(f"(COMP_{self.uniq_num})")
         self._output("@SP")
         self._output("A=M-1")
         self._output("M=-1")
-        self._output(f"(END_{self.line_number})")
+        self._output(f"(END_{self.uniq_num})")
 
     def _addSubOperator(self, operator):
         self._output("@SP")

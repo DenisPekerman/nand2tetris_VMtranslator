@@ -7,7 +7,7 @@ class TestCodeWriter(unittest.TestCase):
     
     def setUp(self) -> None:
         self.mockFile = MockFile('Banana.asm')
-        self.codeWriter = CodeWriter("Foo", self.mockFile)
+        self.codeWriter = CodeWriter("Foo", self.mockFile, sys_init=False)
         return super().setUp()
 
    # """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""ARITHMETIC TEST""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" 
@@ -54,7 +54,7 @@ class TestCodeWriter(unittest.TestCase):
         self.assertListEqual(self.mockFile.read(), expectedResult)
 
     def testEqual(self):
-        self.codeWriter.line_number = 17
+        self.codeWriter.uniq_num = 17
         self.codeWriter.writerArithmetic("eq")
         expectedResult = [
             "@SP",
@@ -79,7 +79,7 @@ class TestCodeWriter(unittest.TestCase):
         self.assertListEqual(self.mockFile.read(), expectedResult)
 
     def testGreaterThan(self):
-        self.codeWriter.line_number = 17
+        self.codeWriter.uniq_num = 17
         self.codeWriter.writerArithmetic("gt")
         expectedResult = [
             "@SP",
@@ -104,7 +104,7 @@ class TestCodeWriter(unittest.TestCase):
         self.assertListEqual(self.mockFile.read(), expectedResult)
 
     def testLesserThan(self):
-        self.codeWriter.line_number = 17
+        self.codeWriter.uniq_num = 17
         self.codeWriter.writerArithmetic("lt")
         expectedResult = [
             "@SP",
@@ -329,7 +329,7 @@ class TestCodeWriter(unittest.TestCase):
         self.assertListEqual(self.mockFile.read(), expectedResult)
 
     def testPopTemp(self):
-        self.codeWriter.line_number = 17
+        self.codeWriter.uniq_num = 17
         self.codeWriter.writePushPop("C_POP", "temp", '2')
         expectedResult = [
             "@5",
@@ -349,7 +349,7 @@ class TestCodeWriter(unittest.TestCase):
         self.assertListEqual(self.mockFile.read(), expectedResult)  
 
     def testPopLocal(self):
-        self.codeWriter.line_number = 17
+        self.codeWriter.uniq_num = 17
         self.codeWriter.writePushPop("C_POP", "local", '2')
         expectedResult = [
             "@LCL",
@@ -369,7 +369,7 @@ class TestCodeWriter(unittest.TestCase):
         self.assertListEqual(self.mockFile.read(), expectedResult)
 
     def testPopArgument(self):
-        self.codeWriter.line_number = 17
+        self.codeWriter.uniq_num = 17
         self.codeWriter.writePushPop("C_POP", "argument", '2')
         expectedResult = [
             "@ARG",
@@ -389,7 +389,7 @@ class TestCodeWriter(unittest.TestCase):
         self.assertListEqual(self.mockFile.read(), expectedResult)
 
     def testPopThat(self):
-        self.codeWriter.line_number = 17
+        self.codeWriter.uniq_num = 17
         self.codeWriter.writePushPop("C_POP", "that", '2')
         expectedResult = [
             "@THAT",
@@ -409,7 +409,7 @@ class TestCodeWriter(unittest.TestCase):
         self.assertListEqual(self.mockFile.read(), expectedResult)
 
     def testPopThis(self):
-        self.codeWriter.line_number = 17
+        self.codeWriter.uniq_num = 17
         self.codeWriter.writePushPop("C_POP", "this", '2')
         expectedResult = [
             "@THIS",

@@ -6,32 +6,19 @@ A=M
 M=D
 @SP
 M=M+1
-//C_PUSH constant 7
-@7
+//C_PUSH constant 8
+@8
 D=A
 @SP
 A=M
 M=D
 @SP
 M=M+1
-// eq
+// add
 @SP
 M=M-1
+A=M
 D=M
-@SP
-M=M-1
-A=M
-D=M-D
-@COMP_0
-D;JEQ
-@SP
-A=M
-M=0
-@END_0
-0;JMP
-(COMP_0)
-@SP
-A=M
-M=-1
-(END_0)
-M=M+1
+A=A-1
+D=D+M
+M=D

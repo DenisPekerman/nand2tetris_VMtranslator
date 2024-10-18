@@ -7,7 +7,6 @@ class MockFile:
         self.content.append(string.strip())
 
     def read(self):
-        
         if len(self.content) == 0:
             return self.content
         index0 = self.content[0]

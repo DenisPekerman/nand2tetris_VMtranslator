@@ -7,11 +7,22 @@ class TestCodeWriter(unittest.TestCase):
     
     def setUp(self) -> None:
         self.mockFile = MockFile('Banana.asm')
-        self.codeWriter = CodeWriter("Foo", self.mockFile)
+        self.codeWriter = CodeWriter("Foo", self.mockFile, sys_init=False)
         return super().setUp()
     
 
+##  tests : sys.init, label, goto, if_goto, if, function, call, return, 
 
+
+    def testSysInit(self):
+        self.codeWriter.writeInit()
+        expectedResult = [
+            '@256', 
+            'D=A', 
+            '@SP', 
+            'M=D'
+        ]
+        self.assertListEqual(self.mockFile.read(), expectedResult)
 
     def testLabel(self):
         self.codeWriter.writeLabel("LOOP")
@@ -58,7 +69,7 @@ class TestCodeWriter(unittest.TestCase):
         self.assertListEqual(self.mockFile.read(), expectedResult)
 
     def testCall(self):
-        self.codeWriter.line_number = 17
+        self.codeWriter.uniq_num = 17
         self.codeWriter.writeCall("SquareGame.new" ,"2")
         expectedResult = [
             '@SquareGame.new$ret.17',

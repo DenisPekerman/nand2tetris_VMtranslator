@@ -13,6 +13,7 @@ class Parser:
             return False
         else:
             self.line = self.line.strip()
+            self.line = self.line.split('//')[0].strip()
             return True
 
     

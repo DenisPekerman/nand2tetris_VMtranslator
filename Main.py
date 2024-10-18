@@ -53,16 +53,36 @@ class Main:
 
     
 if __name__ == "__main__":
-    input_file = sys.argv[1]
-    try:
-        output_path = sys.argv[2]
-        input_file_name = os.path.basename(input_file)
-    except:
-        output_path = ''
-        input_file_name = input_file
 
-    output_file_name = input_file_name.replace('.vm', '.asm')
-    output_file = os.path.join(output_path, output_file_name)
+    def getAllVMfiles(fileOrFolder):
+        isFile = os.path.isfile(fileOrFolder)
+        if isFile:
+            if fileOrFolder.endswith('.vm'):
+                return [fileOrFolder]
 
-    x = Main(input_file, output_file)
-    x.translation()
+        else: 
+            files = os.listdir(fileOrFolder) 
+            files = [file for file in files if file.endswith('.vm')]
+            files = [os.path.join(fileOrFolder, file ) for file in files]
+            return files
+        
+    input = sys.argv[1]
+    input_files = getAllVMfiles(input)
+
+    for file in input_files:
+        print(f'proccesing {file}')
+        try:
+            output_path = sys.argv[2]
+            input_file_name = os.path.basename(file)
+        except:
+            output_path = ''
+            input_file_name = file
+
+        output_file_name = input_file_name.replace('.vm', '.asm')
+        output_file = os.path.join(output_path, output_file_name)
+
+        main = Main(file, output_file)
+        main.translation()
+        
+
+
