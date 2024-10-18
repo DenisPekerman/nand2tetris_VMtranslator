@@ -90,17 +90,20 @@ D=M
 A=A-1
 D=M-D
 M=D
-// Return
+// RETURN
+// FRAME = LCL
 @LCL
 D=M
 @frame
 M=D
+// RET = *(FRAME-5)
 @5
 D=D-A
 A=D
 D=M
 @return_address
 M=D
+// ARG = pop()
 @SP
 M=M-1
 A=M
@@ -108,16 +111,19 @@ D=M
 @ARG
 A=M
 M=D
+// SP=ARG+1
 @ARG
 D=M+1
 @SP
 M=D
+// THAT = *(FRAME-1)
 @frame
 D=M-1
 A=D
 D=M
 @THAT
 M=D
+// THIS = *(FRAME-2)
 @2
 D=A
 @frame
@@ -126,6 +132,7 @@ A=D
 D=M
 @THIS
 M=D
+// ARG = *(FRAME-3)
 @3
 D=A
 @frame
@@ -134,6 +141,7 @@ A=D
 D=M
 @ARG
 M=D
+// LCL = *(FRAME-4)
 @4
 D=A
 @frame
@@ -142,6 +150,7 @@ A=D
 D=M
 @LCL
 M=D
+// goto Ret
 @return_address
 A=M
 0;JMP

@@ -6,9 +6,60 @@ import os
 
 class Main:
     
-    def __init__(self, input_file, output_file):
+    def __init__(self, input_file, output_file, sys_init=True):
         self.input_file = input_file
         self.output_file = output_file
+        self.sys_init = sys_init
+
+        # empty the file if it's a new run
+        if sys_init:
+            with open(self.output_file, 'w'):
+                pass
+
+    @staticmethod
+    def getOutputPath():
+        try:
+            output_path = sys.argv[2]      
+        except:
+            output_path = '' 
+        return output_path
+    
+
+    @staticmethod
+    def getOutputFileName(input):
+        isFile = os.path.isfile(input)
+        output_file_name = os.path.basename(input)
+        if isFile:
+            output_file_name = output_file_name.replace('.vm', '.asm') 
+
+        else:
+            output_file_name = output_file_name + '.asm'
+        return output_file_name
+
+    @staticmethod
+    def prioritizeSys(files):   
+        for file in files:
+            if os.path.basename(file) == 'Sys.vm':
+                files.remove(file)
+                files.insert(0, file)
+                break
+        return files
+
+    @staticmethod
+    def getAllVMfiles(fileOrFolder):
+        isFile = os.path.isfile(fileOrFolder)
+        if isFile:
+            if fileOrFolder.endswith('.vm'):
+                return [fileOrFolder]
+
+        else: 
+            files = os.listdir(fileOrFolder) 
+            files = [file for file in files if file.endswith('.vm')]
+            files = [os.path.join(fileOrFolder, file ) for file in files]
+            files = Main.prioritizeSys(files)
+            return files
+                
+
                 
     def translation(self):
         file_label = os.path.basename(self.input_file)
@@ -18,8 +69,8 @@ class Main:
         if not self.output_file:
             return 
         
-        with open(self.output_file, 'w') as f:
-            code = CodeWriter(file_label, f)
+        with open(self.output_file, 'a') as f:
+            code = CodeWriter(file_label, f, sys_init=self.sys_init)
         
             while parser.advance():
                 commanType= parser.commandType()
@@ -54,47 +105,19 @@ class Main:
     
 if __name__ == "__main__":
 
-    def getOutputPath():
-        try:
-            output_path = sys.argv[2]      
-        except:
-            output_path = '' 
-        return output_path
-    
-
-    def getOutputFileName(input):
-        isFile = os.path.isfile(input)
-        output_file_name = os.path.basename(input)
-        if isFile:
-            output_file_name = output_file_name.replace('.vm', '.asm') 
-
-        else:
-            output_file_name = output_file_name + '.asm'
-        return output_file_name
-
-
-    def getAllVMfiles(fileOrFolder):
-        isFile = os.path.isfile(fileOrFolder)
-        if isFile:
-            if fileOrFolder.endswith('.vm'):
-                return [fileOrFolder]
-
-        else: 
-            files = os.listdir(fileOrFolder) 
-            files = [file for file in files if file.endswith('.vm')]
-            files = [os.path.join(fileOrFolder, file ) for file in files]
-            return files
         
     input = sys.argv[1]
-    input_files = getAllVMfiles(input)
-    output_path = getOutputPath()
-    output_file_name = getOutputFileName(input)
-
+    input_files = Main.getAllVMfiles(input)
+    output_path = Main.getOutputPath()
+    output_file_name = Main.getOutputFileName(input)
+    output_file = os.path.join(output_path, output_file_name)
+    should_init = True
 
     for file in input_files:
         print(f'proccesing {file}')
-        output_file = os.path.join(output_path, output_file_name)
-        main = Main(file, output_file)
+        main = Main(file, output_file, sys_init=should_init)
+        if should_init:
+            should_init = False
         main.translation()
         
 
