@@ -54,6 +54,25 @@ class Main:
     
 if __name__ == "__main__":
 
+    def getOutputPath():
+        try:
+            output_path = sys.argv[2]      
+        except:
+            output_path = '' 
+        return output_path
+    
+
+    def getOutputFileName(input):
+        isFile = os.path.isfile(input)
+        output_file_name = os.path.basename(input)
+        if isFile:
+            output_file_name = output_file_name.replace('.vm', '.asm') 
+
+        else:
+            output_file_name = output_file_name + '.asm'
+        return output_file_name
+
+
     def getAllVMfiles(fileOrFolder):
         isFile = os.path.isfile(fileOrFolder)
         if isFile:
@@ -68,19 +87,13 @@ if __name__ == "__main__":
         
     input = sys.argv[1]
     input_files = getAllVMfiles(input)
+    output_path = getOutputPath()
+    output_file_name = getOutputFileName(input)
+
 
     for file in input_files:
         print(f'proccesing {file}')
-        try:
-            output_path = sys.argv[2]
-            input_file_name = os.path.basename(file)
-        except:
-            output_path = ''
-            input_file_name = file
-
-        output_file_name = input_file_name.replace('.vm', '.asm')
         output_file = os.path.join(output_path, output_file_name)
-
         main = Main(file, output_file)
         main.translation()
         
