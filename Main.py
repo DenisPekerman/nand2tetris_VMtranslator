@@ -16,12 +16,13 @@ class Main:
             with open(self.output_file, 'w'):
                 pass
 
+
     @staticmethod
-    def getOutputPath():
-        try:
-            output_path = sys.argv[2]      
-        except:
-            output_path = '' 
+    def getOutputPath(input_files):
+        if os.path.isfile(input_files):      
+            output_path = os.path.dirname(input_files)
+        elif os.path.isdir(input_files):
+            output_path = input_files    
         return output_path
     
 
@@ -36,6 +37,7 @@ class Main:
             output_file_name = output_file_name + '.asm'
         return output_file_name
 
+
     @staticmethod
     def prioritizeSys(files):   
         for file in files:
@@ -44,6 +46,7 @@ class Main:
                 files.insert(0, file)
                 break
         return files
+
 
     @staticmethod
     def getAllVMfiles(fileOrFolder):
@@ -59,7 +62,6 @@ class Main:
             files = Main.prioritizeSys(files)
             return files
                 
-
                 
     def translation(self):
         file_label = os.path.basename(self.input_file)
@@ -108,7 +110,7 @@ if __name__ == "__main__":
         
     input = sys.argv[1]
     input_files = Main.getAllVMfiles(input)
-    output_path = Main.getOutputPath()
+    output_path = Main.getOutputPath(input)
     output_file_name = Main.getOutputFileName(input)
     output_file = os.path.join(output_path, output_file_name)
     should_init = True
