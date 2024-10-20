@@ -32,7 +32,6 @@ class Main:
         output_file_name = os.path.basename(input)
         if isFile:
             output_file_name = output_file_name.replace('.vm', '.asm') 
-
         else:
             output_file_name = output_file_name + '.asm'
         return output_file_name
@@ -62,7 +61,7 @@ class Main:
             files = Main.prioritizeSys(files)
             return files
                 
-                
+
     def translation(self):
         file_label = os.path.basename(self.input_file)
         file_label = file_label.split('.')[0]

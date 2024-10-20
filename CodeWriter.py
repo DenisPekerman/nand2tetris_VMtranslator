@@ -209,19 +209,13 @@ class CodeWriter:
     
 
     def writeCall(self, funcName, nArg):
-        self._output(f'// call {funcName} {nArg}')
-        self._output('//push return address')
+        self._output(f'//call {funcName} {nArg}')
         self._callHelper(f'{funcName}$ret.{self.uniq_num}', 'A')
-        self._output('//push LCL')
         self._callHelper('LCL', 'M')
-        self._output('//push ARG')
         self._callHelper('ARG', 'M')
-        self._output('//push THIS')
         self._callHelper('THIS', 'M')
-        self._output('//push THAT')
         self._callHelper("THAT", 'M')
 
-        self._output('// ARG = SP-n-5')
         self._output('@SP')
         self._output('D=M')
         self._output(f'@{nArg}')
@@ -231,29 +225,24 @@ class CodeWriter:
         self._output('@ARG')
         self._output('M=D')
 
-        self._output('// LCL=SP')
         self._output('@SP')
         self._output('D=M')
         self._output('@LCL')
         self._output('M=D')
     
-        self._output('// goto f')
         self._output(f'@{funcName}')
         self._output('0;JMP')
 
-        self._output('// (return-address)')
         self._output(f'({funcName}$ret.{self.uniq_num})')
         self.uniq_num += 1
         
     def writeReturn(self):
-        self._output('// RETURN')
-        self._output('// FRAME = LCL')
+        self._output('//FRAME = LCL')
         self._output('@LCL')
         self._output('D=M')
         self._output('@frame')
         self._output('M=D')
         
-        self._output('// RET = *(FRAME-5)')
         self._output('@5')
         self._output('D=D-A')
         self._output('A=D')
@@ -261,7 +250,6 @@ class CodeWriter:
         self._output('@return_address')
         self._output('M=D')
 
-        self._output('// ARG = pop()')
         self._output('@SP')
         self._output('M=M-1')
         self._output('A=M')
@@ -270,13 +258,11 @@ class CodeWriter:
         self._output('A=M')
         self._output('M=D')
 
-        self._output('// SP=ARG+1')
         self._output('@ARG')
         self._output('D=M+1')
         self._output('@SP')
         self._output('M=D')
         
-        self._output('// THAT = *(FRAME-1)')
         self._output('@frame')
         self._output('D=M-1')
         self._output('A=D')
@@ -284,14 +270,10 @@ class CodeWriter:
         self._output('@THAT')
         self._output('M=D')
 
-        self._output('// THIS = *(FRAME-2)')
         self._returnHelper('2', 'THIS')
-        self._output('// ARG = *(FRAME-3)')
         self._returnHelper('3', 'ARG')
-        self._output('// LCL = *(FRAME-4)')
         self._returnHelper('4', 'LCL')
 
-        self._output('// goto Ret')
         self._output('@return_address')
         self._output('A=M')
         self._output('0;JMP')
